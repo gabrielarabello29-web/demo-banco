@@ -1,9 +1,12 @@
 # API Banco Digital
 
-API REST para simular operações básicas de um **banco digital**, desenvolvida em **Java com Spring Boot**, seguindo princípios de **Clean Architecture / Use Cases**, separando regras de negócio da camada de infraestrutura.
+Esta API REST foi desenvolvida com o objetivo de simular as principais operações de um sistema bancário digital, como criação de contas, consulta de saldo, depósitos, saques, transferências e consulta de extrato.
+
+A aplicação foi construída utilizando Java e Spring Boot, adotando o padrão de Use Cases para isolar as regras de negócio da camada de apresentação, promovendo maior organização, manutenibilidade e facilidade de testes.
+
+O projeto aplica boas práticas de desenvolvimento de software, como separação de responsabilidades, tratamento centralizado de exceções e uso de DTOs, garantindo clareza e consistência na comunicação entre as camadas da aplicação.
 
 ![Desenho de Solução](img/solucao.png)
----
 
 ## Tecnologias Utilizadas
 
@@ -16,22 +19,19 @@ API REST para simular operações básicas de um **banco digital**, desenvolvida
 - Lombok
 - Maven
 
----
 
 ## Arquitetura do Projeto
 
 O projeto segue o padrão **Use Case (Application Layer)**, evitando lógica de negócio em controllers ou services tradicionais.
 
-com.demo.banco
-│
-├── controller → Camada REST (endpoints)
-├── usecase → Regras de negócio
-├── model → Entidades JPA
-├── repository → Repositórios JPA
-├── dto → Requests / Responses
-└──exception → Exceções de negócio
+com.demo.banco  
+├── controller → Camada REST (endpoints)  
+├── usecase → Regras de negócio  
+├── model → Entidades JPA  
+├── repository → Repositórios JPA  
+├── dto → Requests / Responses  
+└──exception → Exceções de negócio  
 
----
 
 ##  Entidades Principais
 
@@ -45,13 +45,11 @@ A conta é criada com:
 - status **ATIVA**
 - data de abertura automática do dia atual
 
----
 
 ### Transacao
 
 Registra todas as movimentações financeiras (depósitos, saques, transferências).
 
----
 
 ## Use Cases Implementados
 
@@ -283,7 +281,6 @@ sequenceDiagram
     TransacaoRepository ->> Banco: SELECT transacoes
     Controller -->> Cliente: lista de transações
 ```
----
 
 ## Tratamento de Exceções
 
@@ -296,9 +293,6 @@ O projeto utiliza **exceções de negócio customizadas**, tratadas globalmente.
 - `ValorTransferenciaException`
 - `TransferenciaMesmaContaException`
 
-Todas retornam mensagens claras e **status HTTP apropriados**.
-
----
 
 ## Endpoints Disponíveis
 
@@ -309,6 +303,7 @@ POST /contas
   "nomeTitular": "Maria Silva",
   "cpf": "12345678900"
 }
+```
 
 ### Consultar Saldo
 GET /contas/{id}/saldo
@@ -319,6 +314,7 @@ POST /contas/{id}/depositar
 {
   "valor": 200.00
 }
+```
 
 ### Sacar
 POST /contas/{id}/sacar
@@ -326,6 +322,7 @@ POST /contas/{id}/sacar
 {
   "valor": 50.00
 }
+```
 
 ### Transferir
 POST /contas/{id}/transferir
@@ -334,15 +331,7 @@ POST /contas/{id}/transferir
   "contaDestino": 2,
   "valor": 100.00
 }
+```
 
 ### Extrato
 GET /contas/{id}/extrato
-
----
-
-
-
-
-
-
-
