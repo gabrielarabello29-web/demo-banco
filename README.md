@@ -1,7 +1,8 @@
-# 🏦 API Banco Digital
+# API Banco Digital
 
 API REST para simular operações básicas de um **banco digital**, desenvolvida em **Java com Spring Boot**, seguindo princípios de **Clean Architecture / Use Cases**, separando regras de negócio da camada de infraestrutura.
 
+![Desenho de Solução](img/solucao.png)
 ---
 
 ## Tecnologias Utilizadas
