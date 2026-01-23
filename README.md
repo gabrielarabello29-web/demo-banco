@@ -314,6 +314,9 @@ sequenceDiagram
     TransacaoRepository ->> Banco: SELECT transacoes
     Controller -->> Cliente: lista de transações
 ```
+
+---
+
 ### Encerrar Conta
 
 **Use Case:** `EncerrarContaUseCase`
