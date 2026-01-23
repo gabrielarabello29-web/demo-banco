@@ -20,6 +20,7 @@ public class ContaController {
     private final TransferirUseCase transferirUseCase;
     private final ExtratoUseCase extratoUseCase;
     private final ConsultarSaldoUseCase consultarSaldoUseCase;
+    private final EncerrarContaUseCase encerrarContaUseCase;
 
     public ContaController(
             CriarContaUseCase criarContaUseCase,
@@ -27,7 +28,8 @@ public class ContaController {
             SacarUseCase sacarUseCase,
             TransferirUseCase transferirUseCase,
             ExtratoUseCase extratoUseCase,
-            ConsultarSaldoUseCase consultarSaldoUseCase) {
+            ConsultarSaldoUseCase consultarSaldoUseCase,
+            EncerrarContaUseCase encerrarContaUseCase) {
 
         this.criarContaUseCase = criarContaUseCase;
         this.depositarUseCase = depositarUseCase;
@@ -35,6 +37,7 @@ public class ContaController {
         this.transferirUseCase = transferirUseCase;
         this.extratoUseCase = extratoUseCase;
         this.consultarSaldoUseCase = consultarSaldoUseCase;
+        this.encerrarContaUseCase = encerrarContaUseCase;
     }
 
     @PostMapping
@@ -113,4 +116,17 @@ public class ContaController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PatchMapping("/{id}/encerrar")
+    public ResponseEntity<EncerrarContaResponse> encerrarConta(@PathVariable UUID id) {
+
+        Conta conta = encerrarContaUseCase.executar(id);
+
+        EncerrarContaResponse response =
+                new EncerrarContaResponse(
+                        conta.getId(),
+                        "Conta encerrada com sucesso"
+                );
+
+        return ResponseEntity.ok(response);
+    }
 }

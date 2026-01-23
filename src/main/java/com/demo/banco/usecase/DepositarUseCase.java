@@ -1,8 +1,10 @@
 package com.demo.banco.usecase;
 
+import com.demo.banco.exception.ContaNaoAtivaException;
 import com.demo.banco.exception.ContaNaoEncontradaException;
 import com.demo.banco.exception.ValorTransferenciaException;
 import com.demo.banco.model.Conta;
+import com.demo.banco.model.StatusConta;
 import com.demo.banco.model.TipoTransacao;
 import com.demo.banco.model.Transacao;
 import com.demo.banco.repository.ContaRepository;
@@ -26,13 +28,16 @@ public class DepositarUseCase {
     }
 
     public BigDecimal executar(UUID contaId, BigDecimal valor) {
-
         if (valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValorTransferenciaException();
         }
 
         Conta conta = contaRepository.findById(contaId)
                 .orElseThrow(ContaNaoEncontradaException::new);
+
+        if (conta.getStatusConta() != StatusConta.ATIVA) {
+            throw new ContaNaoAtivaException("Conta não está ativa");
+        }
 
         conta.setSaldo(conta.getSaldo().add(valor));
         contaRepository.save(conta);

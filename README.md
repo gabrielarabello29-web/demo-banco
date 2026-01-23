@@ -6,7 +6,39 @@ A aplicação foi construída utilizando Java e Spring Boot, adotando o padrão 
 
 O projeto aplica boas práticas de desenvolvimento de software, como separação de responsabilidades, tratamento centralizado de exceções e uso de DTOs, garantindo clareza e consistência na comunicação entre as camadas da aplicação.
 
-![Desenho de Solução](img/solucao.png)
+```mermaid
+flowchart TD
+    Usuario[Usuário / Cliente]
+    API[API REST]
+    Controller[Controllers]
+    UseCase[Use Cases]
+    Repository[Repositories]
+    DB[(Banco de Dados)]
+
+    Usuario --> API
+    API --> Controller
+    Controller --> UseCase
+    UseCase --> Repository
+    Repository --> DB
+```
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant C as Controller
+    participant UC as UseCase
+    participant R as Repository
+    participant DB as Banco
+
+    U->>C: Requisição HTTP
+    C->>UC: executar(request)
+    UC->>R: buscar/salvar dados
+    R->>DB: SQL
+    DB-->>R: retorno
+    R-->>UC: entidade
+    UC-->>C: resposta
+    C-->>U: HTTP Response
+```
 
 ## Tecnologias Utilizadas
 
@@ -30,7 +62,7 @@ com.demo.banco
 ├── model → Entidades JPA  
 ├── repository → Repositórios JPA  
 ├── dto → Requests / Responses  
-└──exception → Exceções de negócio  
+└──exception → Exceções de negócio
 
 
 ##  Entidades Principais
@@ -216,6 +248,7 @@ sequenceDiagram
 
 **Regras**
 - Não pode transferir para a mesma conta
+- Conta destino E conta origem devem estar ATIVAS
 - Valor deve ser positivo
 - Conta origem deve existir
 - Conta destino deve existir
@@ -281,6 +314,37 @@ sequenceDiagram
     TransacaoRepository ->> Banco: SELECT transacoes
     Controller -->> Cliente: lista de transações
 ```
+### Encerrar Conta
+
+**Use Case:** `EncerrarContaUseCase`
+
+**Entrada**
+- ID da conta
+
+**Saída**
+- Mensagem de conta ENCERRADA
+
+**Regras**
+- Conta deve existir
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Controller
+    participant EncerrarContaUseCase
+    participant ContaRepository
+    participant Banco
+
+    Cliente ->> Controller: PATCH /contas/{id}/encerrar
+    Controller ->> EncerrarContaUseCase: executar(id)
+    EncerrarContaUseCase ->> ContaRepository: findById(id)
+    ContaRepository ->> Banco: SELECT conta
+
+    EncerrarContaUseCase ->> ContaRepository: salvar(conta.status = ENCERRADA)
+    ContaRepository ->> Banco: UPDATE conta
+
+    Controller -->> Cliente: { id, "Conta encerrada com sucesso" }
+```
 
 ## Tratamento de Exceções
 
@@ -335,3 +399,6 @@ POST /contas/{id}/transferir
 
 ### Extrato
 GET /contas/{id}/extrato
+
+### Encerrar Conta
+PATCH /contas/{id}/encerrar

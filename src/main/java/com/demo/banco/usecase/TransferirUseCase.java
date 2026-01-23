@@ -1,10 +1,8 @@
 package com.demo.banco.usecase;
 
-import com.demo.banco.exception.ContaNaoEncontradaException;
-import com.demo.banco.exception.SaldoInsuficienteException;
-import com.demo.banco.exception.TransferenciaMesmaContaException;
-import com.demo.banco.exception.ValorTransferenciaException;
+import com.demo.banco.exception.*;
 import com.demo.banco.model.Conta;
+import com.demo.banco.model.StatusConta;
 import com.demo.banco.model.TipoTransacao;
 import com.demo.banco.model.Transacao;
 import com.demo.banco.repository.ContaRepository;
@@ -43,6 +41,8 @@ public class TransferirUseCase {
         Conta destino = contaRepository.findById(destinoId)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
 
+        validarContasAtivas(origem, destino);
+
         if (origem.getSaldo().compareTo(valor) < 0) {
             throw new SaldoInsuficienteException();
         }
@@ -63,5 +63,15 @@ public class TransferirUseCase {
         transacaoRepository.save(transacao);
 
         return origem.getSaldo();
+    }
+
+    private void validarContasAtivas(Conta origem, Conta destino) {
+        if (origem.getStatusConta() != StatusConta.ATIVA) {
+            throw new ContaNaoAtivaException("Conta de origem não está ativa");
+        }
+
+        if (destino.getStatusConta() != StatusConta.ATIVA) {
+            throw new ContaNaoAtivaException("Conta de destino não está ativa");
+        }
     }
 }

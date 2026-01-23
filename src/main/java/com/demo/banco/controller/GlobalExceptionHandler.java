@@ -1,9 +1,6 @@
 package com.demo.banco.controller;
 
-import com.demo.banco.exception.ContaNaoEncontradaException;
-import com.demo.banco.exception.SaldoInsuficienteException;
-import com.demo.banco.exception.TransferenciaMesmaContaException;
-import com.demo.banco.exception.ValorTransferenciaException;
+import com.demo.banco.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +23,7 @@ public class GlobalExceptionHandler {
             ContaNaoEncontradaException ex) {
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
 
@@ -42,6 +39,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValorTransferenciaException.class)
     public ResponseEntity<String> handleValorTransferencia(
             ValorTransferenciaException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaNaoAtivaException.class)
+    public ResponseEntity<String> handleContaNaoAtiva(
+            ContaNaoAtivaException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaEncerradaException.class)
+    public ResponseEntity<String> handleContaEncerrada(
+            ContaEncerradaException ex) {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

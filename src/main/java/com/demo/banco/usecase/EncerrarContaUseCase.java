@@ -1,31 +1,36 @@
 package com.demo.banco.usecase;
 
-import com.demo.banco.exception.ContaNaoAtivaException;
+import com.demo.banco.exception.ContaEncerradaException;
 import com.demo.banco.exception.ContaNaoEncontradaException;
 import com.demo.banco.model.Conta;
 import com.demo.banco.model.StatusConta;
 import com.demo.banco.repository.ContaRepository;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Component
-public class ConsultarSaldoUseCase {
+public class EncerrarContaUseCase {
+
     private final ContaRepository contaRepository;
 
-    public ConsultarSaldoUseCase(ContaRepository contaRepository) {
+    public EncerrarContaUseCase(ContaRepository contaRepository) {
         this.contaRepository = contaRepository;
     }
 
-    public BigDecimal executar(UUID contaId) {
+    public Conta executar(UUID contaId) {
+
         Conta conta = contaRepository.findById(contaId)
                 .orElseThrow(ContaNaoEncontradaException::new);
 
-        if (conta.getStatusConta() != StatusConta.ATIVA) {
-            throw new ContaNaoAtivaException("Conta não está ativa");
+        if (conta.getStatusConta() == StatusConta.ENCERRADA) {
+            throw new ContaEncerradaException("Conta já está encerrada");
         }
 
-        return conta.getSaldo();
+        conta.setStatusConta(StatusConta.ENCERRADA);
+
+        contaRepository.save(conta);
+
+        return conta;
     }
 }
