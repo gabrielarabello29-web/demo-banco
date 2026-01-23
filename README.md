@@ -6,7 +6,39 @@ A aplicação foi construída utilizando Java e Spring Boot, adotando o padrão 
 
 O projeto aplica boas práticas de desenvolvimento de software, como separação de responsabilidades, tratamento centralizado de exceções e uso de DTOs, garantindo clareza e consistência na comunicação entre as camadas da aplicação.
 
-![Desenho de Solução](img/solucao.png)
+```mermaid
+flowchart TD
+    Usuario[Usuário / Cliente]
+    API[API REST]
+    Controller[Controllers]
+    UseCase[Use Cases]
+    Repository[Repositories]
+    DB[(Banco de Dados)]
+
+    Usuario --> API
+    API --> Controller
+    Controller --> UseCase
+    UseCase --> Repository
+    Repository --> DB
+```
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant C as Controller
+    participant UC as UseCase
+    participant R as Repository
+    participant DB as Banco
+
+    U->>C: Requisição HTTP
+    C->>UC: executar(request)
+    UC->>R: buscar/salvar dados
+    R->>DB: SQL
+    DB-->>R: retorno
+    R-->>UC: entidade
+    UC-->>C: resposta
+    C-->>U: HTTP Response
+```
 
 ## Tecnologias Utilizadas
 
